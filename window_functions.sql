@@ -35,3 +35,21 @@ SELECT emp_no,department,salary,SUM(salary) OVER(PARTITION BY department ORDER B
 SELECT emp_no,department,salary,salary-LAG(salary) 
 OVER(PARTITION BY department ORDER BY salary DESC)as salary_diff
 FROM employees
+
+CREATE FUNCTION poor_or_rich(@sal INT)RETURNS CHAR(4) AS 
+BEGIN
+	DECLARE @return_value CHAR(4);
+	IF(@sal<=60000) SET @return_value='poor';
+	ELSE SET @return_value = 'rich';
+	RETURN @return_value;
+END
+
+CREATE FUNCTION get_emp_by_dept_name(@deptname VARCHAR(50)) RETURNS TABLE AS
+RETURN (
+SELECT * FROM employees WHERE department = @deptname
+);
+CREATE FUNCTION get_name(@deptname VARCHAR(50)) RETURNS TABLE AS
+RETURN (
+SELECT * FROM employees WHERE department = @deptname
+);
+SELECT * FROM dbo.get_emp_by_dept_name('engineering');
